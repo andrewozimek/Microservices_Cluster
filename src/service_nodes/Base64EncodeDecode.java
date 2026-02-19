@@ -1,3 +1,4 @@
+package src.service_nodes;
 import java.util.Base64;
 
 public class Base64EncodeDecode {
