@@ -1,4 +1,4 @@
-package src.service_nodes;
+package service_nodes;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package src.service_nodes;
+package service_nodes;
 
 import java.io.*;
 import java.util.HashMap;
