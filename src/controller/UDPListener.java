@@ -7,6 +7,7 @@ public class UDPListener implements Runnable {
 
     public static final ConcurrentHashMap<String, String> aliveNodes = new ConcurrentHashMap<>();
 
+
     @Override
     public void run() {
         try (DatagramSocket udpSocket = new DatagramSocket(Server.UDP_PORT)) {
