@@ -39,7 +39,7 @@ public class ServiceNode implements Runnable{
         String serviceName = args[0];
         int tcpPort = Integer.parseInt(args[1]);
         String serverHost = (args.length >= 3) ? args[2] : "127.0.0.1";
-        int serverUdpPort = (args.length >= 4) ? Integer.parseInt(args[3]) : 5001;
+        int serverUdpPort = (args.length >= 4) ? Integer.parseInt(args[3]) : 5051;
 
         ServiceNode node = new ServiceNode(serviceName, tcpPort, serverHost, serverUdpPort);
         node.run();

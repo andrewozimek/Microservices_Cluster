@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Client {
 
     private static final String SERVER_HOST = "127.0.0.1";
-    private static final int SERVER_TCP_PORT = 5000;
+    private static final int SERVER_TCP_PORT = 5050;
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);

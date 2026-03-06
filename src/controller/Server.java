@@ -5,8 +5,8 @@ import java.net.*;
 
 public class Server {
 
-    public static final int TCP_PORT = 5000;
-    public static final int UDP_PORT = 5001;
+    public static final int TCP_PORT = 5050;
+    public static final int UDP_PORT = 5051;
 
     public static void main(String[] args) throws IOException {
 
