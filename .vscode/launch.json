@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "client.Client",
+            "projectName": "Microservices_Cluster_37f301e"
+        },
+        {
+            "type": "java",
             "name": "Server",
             "request": "launch",
             "mainClass": "controller.Server",

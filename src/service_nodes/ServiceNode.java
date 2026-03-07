@@ -61,7 +61,7 @@ public class ServiceNode implements Runnable{
             while (running) {
                 Socket s = serverSocket.accept();
                 // handle one request per connection 
-                handleOneRequest(s);
+                new Thread(() -> handleOneRequest(s)).start();
             }
         } catch (IOException e) {
             System.err.println(serviceName + " TCP server error: " + e.getMessage());
