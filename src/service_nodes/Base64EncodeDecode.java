@@ -5,15 +5,15 @@ public class Base64EncodeDecode {
 
     // Encodes plain text to Base64 [cite: 16]
     public String encode(String data) {
-        return Base64.getEncoder().encodeToString(data.getBytes());
+        return Base64.getEncoder().encodeToString(data.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
     // Decodes Base64 back to plain text [cite: 16]
     public String decode(String base64Data) {
         try {
-            return new String(Base64.getDecoder().decode(base64Data));
+            return new String(Base64.getDecoder().decode(base64Data), java.nio.charset.StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
-            return "Error: Invalid Base64 input";
+            return "Invalid Base64 input";
         }
     }
 

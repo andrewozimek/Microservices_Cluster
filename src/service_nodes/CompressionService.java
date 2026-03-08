@@ -25,8 +25,14 @@ public class CompressionService {
              BufferedReader reader = new BufferedReader(new InputStreamReader(gis, "UTF-8"))) {
             StringBuilder out = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) out.append(line);
-            return out.toString();
+            while ((line = reader.readLine()) != null) {
+                out.append(line).append("\n");
+            }
+
+        if (out.length() > 0) {
+            out.setLength(out.length() - 1); // Removes the very last extra newline
+        }
+        return out.toString();
         }
     }
 
@@ -48,7 +54,7 @@ public class CompressionService {
             System.out.println("Match: " + input.equals(decompressed));
 
         } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
+            System.err.println(e.getMessage());
         } finally {
             scanner.close();
         }

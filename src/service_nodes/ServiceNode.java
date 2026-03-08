@@ -32,7 +32,7 @@ public class ServiceNode implements Runnable{
     public static void main(String[] args){
         // usage error handeling
         if (args.length < 2) {
-            System.out.println("Usage: java src.service_nodes.ServiceNode <serviceName> <tcpPort> [serverHost=127.0.0.1] [serverUdpPort=5001]");
+            System.out.println("Usage: java src.service_nodes.ServiceNode <serviceName> <tcpPort> [serverHost=127.0.0.1] [serverUdpPort=5051]");
             System.exit(1);
         }
 
@@ -124,12 +124,9 @@ public class ServiceNode implements Runnable{
             return "OK|" + svc.encode(data);
         }
         if (command.equals("DECODE")) {
-            String result = svc.decode(data);
-            if (result.startsWith("Error:")) {
-                return "ERROR|" + result;
-            }
-            return "OK|" + result;
-        }
+        String result = svc.decode(data);
+        return result.equals("Invalid Base64 input") ? "ERROR|" + result : "OK|" + result;
+}
         return "ERROR|Base64 commands: ENCODE|text or DECODE|base64";
     }
 
@@ -150,10 +147,7 @@ public class ServiceNode implements Runnable{
         }
         CSVStatsService svc = new CSVStatsService();
         String result = svc.processCSV(data);
-        if (result.startsWith("Error:")) {
-            return "ERROR|" + result;
-        }
-        return "OK|" + result;
+        return result.startsWith("Results") ? "OK|" + result : "ERROR|" + result;
     }
 
     private String handleEntropy(String command, String data) {
@@ -162,10 +156,7 @@ public class ServiceNode implements Runnable{
         }
         FileEntropyAnalyzer svc = new FileEntropyAnalyzer();
         String result = svc.processRequest("ANALYZE|" + data);
-        if (result.startsWith("ERROR:")) {
-            return "ERROR|" + result;
-        }
-        return "OK|" + result;
+        return result.startsWith("Entropy") ? "OK|" + result : "ERROR|" + result;
     }
 
     private String handleImage(String command, String data) {
@@ -173,10 +164,8 @@ public class ServiceNode implements Runnable{
         ImageTransform svc = new ImageTransform();
         String fullRequest = data == null || data.isEmpty() ? command : command + "|" + data;
         String result = svc.processRequest(fullRequest);
-        if (result.startsWith("ERROR:")) {
-            return "ERROR|" + result;
-        }
-        return "OK|" + result;
+// Valid image responses are pure Base64 (no spaces). Error messages contain words.
+        return result.contains(" ") ? "ERROR|" + result : "OK|" + result;
     }
 
 

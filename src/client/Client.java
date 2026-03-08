@@ -27,8 +27,10 @@ public class Client {
                 }
 
                 if (!serviceListLine.startsWith("SERVICES:")) {
-                    System.out.println("Unexpected response: " + serviceListLine);
-                    break;
+                    System.out.println("Server Message: " + serviceListLine);
+                    System.out.println("Press Enter to try again...");
+                    scanner.nextLine();
+                    continue; // Loops back instead of exiting
                 }
 
                 String[] services = serviceListLine.substring("SERVICES:".length()).split(",");

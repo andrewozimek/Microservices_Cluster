@@ -37,7 +37,7 @@ public class FileEntropyAnalyzer {
         try {
             String[] parts = request.split("\\|", 2);
             if (!parts[0].equalsIgnoreCase("ANALYZE"))
-                return "ERROR: Unknown command '" + parts[0] + "'";
+                return "Unknown command '" + parts[0] + "'";
 
             byte[] data = Base64.getDecoder().decode(parts[1]);
             double entropy = calculateEntropy(data);
@@ -45,7 +45,7 @@ public class FileEntropyAnalyzer {
             return String.format("Entropy: %.4f bits/byte | %s", entropy, interpret(entropy));
 
         } catch (IllegalArgumentException e) {
-            return "ERROR: Invalid Base64 input";
+            return "Invalid Base64 input";
         }
     }
 

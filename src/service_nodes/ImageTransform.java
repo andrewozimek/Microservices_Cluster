@@ -77,15 +77,15 @@ public class ImageTransform {
                 case "THUMBNAIL" -> imageToBase64(thumbnail(base64ToImage(parts[1])), "png");
                 case "ROTATE"    -> imageToBase64(rotate(base64ToImage(parts[2]), Integer.parseInt(parts[1])), "png");
                 case "GRAYSCALE" -> imageToBase64(grayscale(base64ToImage(parts[1])), "png");
-                default          -> "ERROR: Unknown command '" + command + "'";
+                default          -> "Unknown command '" + command + "'";
             };
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            return "ERROR: Missing parameters";
+            return "Missing parameters";
         } catch (NumberFormatException e) {
-            return "ERROR: Invalid number parameter";
+            return "Invalid number parameter";
         } catch (IOException e) {
-            return "ERROR: Could not process image - " + e.getMessage();
+            return "Could not process image - " + e.getMessage();
         }
     }
 

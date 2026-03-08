@@ -28,7 +28,7 @@ public class ClientHandler implements Runnable {
                 return;
             }
             String serviceList = services.stream().sorted().collect(Collectors.joining(","));
-            out.println("SERVICES: " + serviceList);
+            out.println("SERVICES:" + serviceList);
 
             //Read client's service request (format: serviceName|payload)
             String request = in.readLine();

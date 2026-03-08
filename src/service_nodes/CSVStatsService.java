@@ -17,12 +17,12 @@ public class CSVStatsService {
                 }
             }
 
-            if (numbers.isEmpty()) return "Error: No valid numbers found.";
+            if (numbers.isEmpty()) return "No valid numbers found.";
 
             // Basic Stats
             double sum = 0;
-            double min = Double.MAX_VALUE;
-            double max = Double.MIN_VALUE;
+            double min = Double.POSITIVE_INFINITY;
+            double max = Double.NEGATIVE_INFINITY;
 
             for (double n : numbers) {
                 sum += n;
@@ -53,9 +53,9 @@ public class CSVStatsService {
                                  mean, median, stdDev, min, max);
 
         } catch (NumberFormatException e) {
-            return "Error: Input contains non-numeric values.";
+            return "Input contains non-numeric values.";
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 
