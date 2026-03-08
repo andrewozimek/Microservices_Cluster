@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CompressionService",
+            "request": "launch",
+            "mainClass": "service_nodes.CompressionService",
+            "projectName": "Microservices_Cluster_feca6806"
+        },
+        {
+            "type": "java",
+            "name": "Base64EncodeDecode",
+            "request": "launch",
+            "mainClass": "service_nodes.Base64EncodeDecode",
+            "projectName": "Microservices_Cluster_feca6806"
+        },
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "client.Client",
+            "projectName": "Microservices_Cluster_feca6806"
+        },
+        {
+            "type": "java",
             "name": "Client",
             "request": "launch",
             "mainClass": "client.Client",

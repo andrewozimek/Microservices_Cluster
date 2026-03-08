@@ -32,7 +32,7 @@ The system consists of three entities:
 
 From the root project directory:
 
-    javac -d out src/controller/*.java src/common/*.java src/service_nodes/*.java src/client/*.java
+    javac -d out src/controller/*.java src/service_nodes/*.java src/client/*.java
 
 ---
 
@@ -46,7 +46,11 @@ Terminal 1 — Start the Server:
 
 Terminal 2 — Start the Service Nodes:
 
-    java -cp out service_nodes.ServiceNodeRunner
+    java -cp out service_nodes.ServiceNodeRunner base64
+    java -cp out service_nodes.ServiceNodeRunner compression
+    java -cp out service_nodes.ServiceNodeRunner csv
+    java -cp out service_nodes.ServiceNodeRunner entropy
+    java -cp out service_nodes.ServiceNodeRunner image
 
 Terminal 3 — Start the Client:
 
@@ -145,8 +149,6 @@ SN to Server (result):
 src/
 ├── client/
 │   └── Client.java
-├── common/
-│   └── Message.java
 ├── controller/
 │   ├── Server.java
 │   ├── ClientHandler.java
