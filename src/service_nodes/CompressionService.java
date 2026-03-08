@@ -21,19 +21,15 @@ public class CompressionService {
     public String decompress(String compressedBase64) throws IOException {
         if (compressedBase64 == null || compressedBase64.length() == 0) return compressedBase64;
         byte[] compressed = Base64.getDecoder().decode(compressedBase64);
-        try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(compressed));
-             BufferedReader reader = new BufferedReader(new InputStreamReader(gis, "UTF-8"))) {
-            StringBuilder out = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.append(line).append("\n");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(compressed))) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gis.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
             }
-
-        if (out.length() > 0) {
-            out.setLength(out.length() - 1); // Removes the very last extra newline
         }
-        return out.toString();
-        }
+        return out.toString("UTF-8");
     }
 
     public static void main(String[] args) {
