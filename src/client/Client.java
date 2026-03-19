@@ -3,20 +3,21 @@ package client;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import config.ConfigLoader;
 
 public class Client {
 
-    private static final String SERVER_HOST = "127.0.0.1";
-    private static final int SERVER_TCP_PORT = 5050;
-
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
+        
+        String serverHost = ConfigLoader.getServerHost();
+        int serverTcpPort = ConfigLoader.getServerTcpPort();
 
         System.out.println("=== QU Microservices Cluster Client ===");
-        System.out.println("Connecting to server at " + SERVER_HOST + ":" + SERVER_TCP_PORT);
+        System.out.println("Connecting to server at " + serverHost + ":" + serverTcpPort);
 
         while (true) {
-            try (Socket socket = new Socket(SERVER_HOST, SERVER_TCP_PORT);
+            try (Socket socket = new Socket(serverHost, serverTcpPort);
                  BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                  PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 

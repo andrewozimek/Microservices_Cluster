@@ -1,10 +1,12 @@
 package service_nodes;
 
+import config.ConfigLoader;
+
 public class ServiceNodeRunner {
     public static void main(String[] args) {
-        // Default server settings
-        String serverHost = "127.0.0.1";
-        int serverUdpPort = 5051;
+        // Load server settings from config file
+        String serverHost = ConfigLoader.getServerHost();
+        int serverUdpPort = ConfigLoader.getServerUdpPort();
 
         // Check if the user provided a service name in the terminal
         if (args.length < 1) {
@@ -21,23 +23,23 @@ public class ServiceNodeRunner {
         switch (selection) {
             case "base64":
                 serviceName = "Base64EncodeDecode";
-                port = 6001;
+                port = ConfigLoader.getServicePort("base64");
                 break;
             case "compression":
                 serviceName = "CompressionService";
-                port = 6002;
+                port = ConfigLoader.getServicePort("compression");
                 break;
             case "csv":
                 serviceName = "CSVStatsService";
-                port = 6003;
+                port = ConfigLoader.getServicePort("csv");
                 break;
             case "entropy":
                 serviceName = "FileEntropyAnalyzer";
-                port = 6004;
+                port = ConfigLoader.getServicePort("entropy");
                 break;
             case "image":
                 serviceName = "ImageTransform";
-                port = 6005;
+                port = ConfigLoader.getServicePort("image");
                 break;
             default:
                 System.out.println("Unknown service: " + selection);

@@ -6,6 +6,8 @@ import java.util.concurrent.*;
 
 public class UDPListener implements Runnable {
 
+    private final int udpPort;
+    
     // aliveNodes: serviceName -> "ip:port"
     public static final ConcurrentHashMap<String, String> aliveNodes = new ConcurrentHashMap<>();
 
@@ -13,6 +15,14 @@ public class UDPListener implements Runnable {
     public static final ConcurrentHashMap<String, Long> lastHeartbeat = new ConcurrentHashMap<>();
     // timeout time is 120 seconds
     private static final long TIMEOUT_MS = 120000;
+
+    /**
+     * Constructor to create UDPListener with specified port
+     * @param udpPort the port to listen for UDP heartbeats
+     */
+    public UDPListener(int udpPort) {
+        this.udpPort = udpPort;
+    }
 
 
     @Override
@@ -43,8 +53,8 @@ public class UDPListener implements Runnable {
         cleanupThread.setDaemon(true);
         cleanupThread.start();
 
-        try (DatagramSocket udpSocket = new DatagramSocket(Server.UDP_PORT)) {
-            System.out.println("UDP listener started on port " + Server.UDP_PORT);
+        try (DatagramSocket udpSocket = new DatagramSocket(udpPort)) {
+            System.out.println("UDP listener started on port " + udpPort);
 
             byte[] buffer = new byte[1024];
 

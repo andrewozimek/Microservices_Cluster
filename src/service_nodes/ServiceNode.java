@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
+import config.ConfigLoader;
 
 public class ServiceNode implements Runnable{
 
@@ -32,14 +33,15 @@ public class ServiceNode implements Runnable{
     public static void main(String[] args){
         // usage error handeling
         if (args.length < 2) {
-            System.out.println("Usage: java src.service_nodes.ServiceNode <serviceName> <tcpPort> [serverHost=127.0.0.1] [serverUdpPort=5051]");
+            System.out.println("Usage: java src.service_nodes.ServiceNode <serviceName> <tcpPort> [serverHost] [serverUdpPort]");
+            System.out.println("If serverHost and serverUdpPort are not provided, they will be loaded from config.properties");
             System.exit(1);
         }
 
         String serviceName = args[0];
         int tcpPort = Integer.parseInt(args[1]);
-        String serverHost = (args.length >= 3) ? args[2] : "127.0.0.1";
-        int serverUdpPort = (args.length >= 4) ? Integer.parseInt(args[3]) : 5051;
+        String serverHost = (args.length >= 3) ? args[2] : ConfigLoader.getServerHost();
+        int serverUdpPort = (args.length >= 4) ? Integer.parseInt(args[3]) : ConfigLoader.getServerUdpPort();
 
         ServiceNode node = new ServiceNode(serviceName, tcpPort, serverHost, serverUdpPort);
         node.run();
