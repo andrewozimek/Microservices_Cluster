@@ -2,6 +2,7 @@ package service_nodes;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -11,7 +12,10 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 import java.util.Random;
+
+import client.Client;
 
 public class ServiceNode implements Runnable{
 
@@ -21,6 +25,23 @@ public class ServiceNode implements Runnable{
     private final int serverUdpPort;
 
     private volatile boolean running = true;
+    static Properties props;
+
+    // get properties
+    static{
+        props = new Properties();
+        try(InputStream in = Client.class.getClassLoader().getResourceAsStream("config/cluster.properties")){
+            // error handeling
+            if(in == null){
+                throw new RuntimeException("Could not find config/cluster.properties on classpath");
+            }
+
+            props.load(in);
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to load cluster.properties", e);
+        }
+    }
 
     public ServiceNode(String serviceName, int tcpPort, String serverHost, int serverUdpPort){
         this.serviceName = serviceName;
@@ -38,8 +59,8 @@ public class ServiceNode implements Runnable{
 
         String serviceName = args[0];
         int tcpPort = Integer.parseInt(args[1]);
-        String serverHost = (args.length >= 3) ? args[2] : "127.0.0.1";
-        int serverUdpPort = (args.length >= 4) ? Integer.parseInt(args[3]) : 5051;
+        String serverHost = (args.length >= 3) ? args[2] : props.getProperty("server.host");
+        int serverUdpPort = (args.length >= 4) ? Integer.parseInt(args[3]) :  Integer.parseInt(props.getProperty("server.udp.port"));
 
         ServiceNode node = new ServiceNode(serviceName, tcpPort, serverHost, serverUdpPort);
         node.run();

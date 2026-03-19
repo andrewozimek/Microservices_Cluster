@@ -2,12 +2,31 @@ package client;
 
 import java.io.*;
 import java.net.*;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Client {
+    
+    private static final String SERVER_HOST;
+    private static final int SERVER_TCP_PORT;
 
-    private static final String SERVER_HOST = "127.0.0.1";
-    private static final int SERVER_TCP_PORT = 5050;
+    // get ip and tcp port from properties
+    static{
+        Properties props = new Properties();
+        try(InputStream in = Client.class.getClassLoader().getResourceAsStream("config/cluster.properties")){
+            // error handeling
+            if(in == null){
+                throw new RuntimeException("Could not find config/cluster.properties on classpath");
+            }
+
+            props.load(in);
+            SERVER_HOST = props.getProperty("server.host");
+            SERVER_TCP_PORT = Integer.parseInt(props.getProperty("server.tcp.port"));
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to load cluster.properties", e);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);

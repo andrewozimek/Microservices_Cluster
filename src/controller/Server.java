@@ -2,11 +2,32 @@ package controller;
 
 import java.io.*;
 import java.net.*;
+import java.util.Properties;
+
+import client.Client;
 
 public class Server {
 
-    public static final int TCP_PORT = 5050;
-    public static final int UDP_PORT = 5051;
+    public static final int TCP_PORT;
+    public static final int UDP_PORT;
+
+    // get udp and tcp port from properties
+    static{
+        Properties props = new Properties();
+        try(InputStream in = Client.class.getClassLoader().getResourceAsStream("config/cluster.properties")){
+            // error handeling
+            if(in == null){
+                throw new RuntimeException("Could not find config/cluster.properties on classpath");
+            }
+
+            props.load(in);
+            TCP_PORT = Integer.parseInt(props.getProperty("server.tcp.port"));
+            UDP_PORT = Integer.parseInt(props.getProperty("server.udp.port"));
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to load cluster.properties", e);
+        }
+    }
 
     public static void main(String[] args) throws IOException {
 

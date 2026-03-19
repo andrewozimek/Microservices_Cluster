@@ -1,10 +1,31 @@
 package service_nodes;
 
+import java.io.InputStream;
+import java.util.Properties;
+
+import client.Client;
+
 public class ServiceNodeRunner {
+    // get properties
+    static Properties props;
+    static{
+        props = new Properties();
+        try(InputStream in = Client.class.getClassLoader().getResourceAsStream("config/cluster.properties")){
+            // error handeling
+            if(in == null){
+                throw new RuntimeException("Could not find config/cluster.properties on classpath");
+            }
+
+            props.load(in);
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to load cluster.properties", e);
+        }
+    }
     public static void main(String[] args) {
         // Default server settings
-        String serverHost = "127.0.0.1";
-        int serverUdpPort = 5051;
+        String serverHost = props.getProperty("server.host");
+        int serverUdpPort = Integer.parseInt(props.getProperty("server.udp.port"));
 
         // Check if the user provided a service name in the terminal
         if (args.length < 1) {
