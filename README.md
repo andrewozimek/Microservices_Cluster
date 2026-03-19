@@ -142,7 +142,7 @@ Replace `192.168.1.100` with the actual server IP you found from `ipconfig`.
 
 **On the server computer:**
 ```sh
-java -cp out:. controller.Server
+java -cp "out;." controller.Server
 ```
 
 ### Step 4: Run Service Nodes
@@ -150,18 +150,18 @@ java -cp out:. controller.Server
 **On separate computers or terminals**, run each service:
 
 ```sh
-java -cp out:. service_nodes.ServiceNodeRunner base64
-java -cp out:. service_nodes.ServiceNodeRunner compression
-java -cp out:. service_nodes.ServiceNodeRunner csv
-java -cp out:. service_nodes.ServiceNodeRunner entropy
-java -cp out:. service_nodes.ServiceNodeRunner image
+java -cp "out;." service_nodes.ServiceNodeRunner base64
+java -cp "out;." service_nodes.ServiceNodeRunner compression
+java -cp "out;." service_nodes.ServiceNodeRunner csv
+java -cp "out;." service_nodes.ServiceNodeRunner entropy
+java -cp "out;." service_nodes.ServiceNodeRunner image
 ```
 
 ### Step 5: Run the Client
 
 **On a client computer:**
 ```sh
-java -cp out:. client.Client
+java -cp "out;." client.Client
 ```
 
 ---
@@ -172,11 +172,10 @@ java -cp out:. client.Client
 - **config.properties**: Must have the same `server.host` value on all machines
 - **Ports**: Make sure ports 5050, 5051, and 6001-6005 are not blocked by your firewall
 - **Same Network**: All machines must be connected to the same WiFi or network
-service.compression.port=6002
-service.csv.port=6003
-service.entropy.port=6004
-service.image.port=6005
-```
+
+---
+
+## Configuration Examples (Reference)
 
 **Custom Ports:**
 ```properties

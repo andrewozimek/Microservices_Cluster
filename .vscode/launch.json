@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Server",
+            "request": "launch",
+            "mainClass": "controller.Server",
+            "projectName": "Microservices_Cluster_762009e5"
+        },
+        {
+            "type": "java",
             "name": "CompressionService",
             "request": "launch",
             "mainClass": "service_nodes.CompressionService",
