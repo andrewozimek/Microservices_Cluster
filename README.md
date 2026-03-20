@@ -68,6 +68,59 @@ Falls back to default values if `config.properties` is missing.
 
 ---
 
+### Connecting to a Partner's Server
+
+Use this when someone else is running the server and you want to add your service node or use the client.
+
+**Step 1 — Get their IP**
+
+Ask your partner to run `ipconfig` (Windows) or `ifconfig | grep "inet "` (Mac) and share their IP.
+
+**Step 2 — Update config.properties**
+
+Open `config.properties` and set `server.host` to their IP:
+```properties
+server.host=<partner's IP here>
+```
+
+Then copy it into `out/`:
+- Mac: `cp config.properties out/`
+- Windows: `copy config.properties out\`
+
+**Step 3 — Compile (if not already done)**
+
+Mac/Linux:
+```bash
+javac -d out src/config/*.java src/controller/*.java src/service_nodes/*.java src/client/*.java
+```
+Windows:
+```cmd
+javac -d out src/config/*.java src/controller/*.java src/service_nodes/*.java src/client/*.java
+```
+
+**Step 4 — Run your service node**
+
+This registers your machine as a worker with their server:
+```bash
+java -cp out service_nodes.ServiceNodeRunner base64
+```
+Replace `base64` with whichever service you are responsible for: `compression`, `csv`, `entropy`, or `image`.
+
+You should see:
+```
+Starting Base64EncodeDecode on port 6001
+```
+
+**Step 5 — Run the client (in a new terminal)**
+
+```bash
+java -cp out client.Client
+```
+
+Your service will now appear in the menu. Both you and your partner must be on the **same network** (same WiFi router).
+
+---
+
 ### Windows Instructions
 
 #### Step 1: Open Terminal
