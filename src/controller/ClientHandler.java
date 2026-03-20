@@ -71,6 +71,7 @@ public class ClientHandler implements Runnable {
                 PrintWriter snOut = new PrintWriter(snSocket.getOutputStream(), true);
                 BufferedReader snIn = new BufferedReader(new InputStreamReader(snSocket.getInputStream()));
             ){
+                snSocket.setSoTimeout(60000); // 60 second timeout for large payloads (e.g. image transfers)
                 snOut.println(payload);
                 String response = snIn.readLine();
                 if(response == null){
