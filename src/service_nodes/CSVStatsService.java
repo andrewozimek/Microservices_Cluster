@@ -6,56 +6,96 @@ public class CSVStatsService {
 
     public String processCSV(String data) {
         try {
-            // Split by comma and clean up whitespace
-            String[] parts = data.split(",");
-            List<Double> numbers = new ArrayList<>();
-            
-            for (String s : parts) {
-                String trimmed = s.trim();
-                if (!trimmed.isEmpty()) {
-                    numbers.add(Double.parseDouble(trimmed));
+            // Base64 decode the incoming CSV data
+            byte[] decoded = java.util.Base64.getDecoder().decode(data);
+            data = new String(decoded).trim();
+
+            String[] rows = data.split("\\r?\\n");
+            if (rows.length == 0) return "Empty CSV.";
+
+            // Parse header row
+            String[] headers = rows[0].split(",");
+            int numCols = headers.length;
+
+            // Collect values per column
+            List<List<Double>> columnData = new ArrayList<>();
+            for (int i = 0; i < numCols; i++) {
+                columnData.add(new ArrayList<>());
+            }
+
+            // Parse data rows
+            for (int r = 1; r < rows.length; r++) {
+                String row = rows[r].trim();
+                if (row.isEmpty()) continue;
+                String[] cells = row.split(",");
+                for (int c = 0; c < cells.length && c < numCols; c++) {
+                    try {
+                        double val = Double.parseDouble(cells[c].trim());
+                        columnData.get(c).add(val);
+                    } catch (NumberFormatException e) {
+                        // skip text values (names, URLs, IDs, etc.)
+                    }
                 }
             }
 
-            if (numbers.isEmpty()) return "No valid numbers found.";
+            // Build result for numeric columns only (single line, | separated)
+            StringBuilder sb = new StringBuilder("Results: ");
+            boolean anyNumeric = false;
 
-            // Basic Stats
-            double sum = 0;
-            double min = Double.POSITIVE_INFINITY;
-            double max = Double.NEGATIVE_INFINITY;
+            for (int c = 0; c < numCols; c++) {
+                List<Double> vals = columnData.get(c);
+                if (vals.isEmpty()) continue; // skip text-only columns
 
-            for (double n : numbers) {
-                sum += n;
-                if (n < min) min = n;
-                if (n > max) max = n;
+                anyNumeric = true;
+                String colName = headers[c].trim();
+
+                double sum = 0, min = Double.POSITIVE_INFINITY, max = Double.NEGATIVE_INFINITY;
+                for (double v : vals) {
+                    sum += v;
+                    if (v < min) min = v;
+                    if (v > max) max = v;
+                }
+                double mean = sum / vals.size();
+
+                Collections.sort(vals);
+                double median;
+                int sz = vals.size();
+                if (sz % 2 == 0) {
+                    median = (vals.get(sz / 2) + vals.get(sz / 2 - 1)) / 2.0;
+                } else {
+                    median = vals.get(sz / 2);
+                }
+
+                double varianceSum = 0;
+                for (double v : vals) varianceSum += Math.pow(v - mean, 2);
+                double stdDev = Math.sqrt(varianceSum / sz);
+
+                sb.append(String.format(
+                    "[%s] Count:%d Mean:%.2f Median:%.2f StdDev:%.2f Min:%.2f Max:%.2f || ",
+                    colName, sz, mean, median, stdDev, min, max));
             }
 
-            double mean = sum / numbers.size();
-
-            // Median Logic (requires sorting)
-            Collections.sort(numbers);
-            double median;
-            int size = numbers.size();
-            if (size % 2 == 0) {
-                median = (numbers.get(size / 2) + numbers.get(size / 2 - 1)) / 2.0;
-            } else {
-                median = numbers.get(size / 2);
+            if (!anyNumeric) {
+                // No numbers found — report text column info instead (single line)
+                StringBuilder fallback = new StringBuilder(
+                    "No numeric columns found. Rows: " + (rows.length - 1) + " Columns: " + numCols + " || ");
+                for (int c = 0; c < numCols; c++) {
+                    Set<String> unique = new HashSet<>();
+                    for (int r = 1; r < rows.length; r++) {
+                        String row = rows[r].trim();
+                        if (row.isEmpty()) continue;
+                        String[] cells = row.split(",");
+                        if (c < cells.length) unique.add(cells[c].trim());
+                    }
+                    fallback.append(String.format("[%s] %d unique || ", headers[c].trim(), unique.size()));
+                }
+                return fallback.toString().trim();
             }
 
-            // Standard Deviation
-            double varianceSum = 0;
-            for (double n : numbers) {
-                varianceSum += Math.pow(n - mean, 2);
-            }
-            double stdDev = Math.sqrt(varianceSum / size);
+            return sb.toString().trim();
 
-            return String.format("Results -> Mean: %.2f, Median: %.2f, StdDev: %.2f, Min: %.2f, Max: %.2f", 
-                                 mean, median, stdDev, min, max);
-
-        } catch (NumberFormatException e) {
-            return "Input contains non-numeric values.";
         } catch (Exception e) {
-            return e.getMessage();
+            return "Error processing CSV: " + e.getMessage();
         }
     }
 
@@ -65,14 +105,14 @@ public class CSVStatsService {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== CSV Stats Service Test Bench ===");
-        System.out.println("Enter numbers separated by commas (e.g., 10, 20, 30.5, 40):");
-        
+        System.out.println("Paste CSV data (header row first):");
+
         if (scanner.hasNextLine()) {
             String input = scanner.nextLine();
             String result = service.processCSV(input);
             System.out.println(result);
         }
-        
+
         scanner.close();
     }
 }

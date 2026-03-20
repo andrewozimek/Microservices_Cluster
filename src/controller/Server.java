@@ -17,7 +17,7 @@ public class Server {
         new Thread(new UDPListener(udpPort)).start();
 
         // TCP listener - main thread
-        ServerSocket serverSocket = new ServerSocket(tcpPort);
+        ServerSocket serverSocket = new ServerSocket(tcpPort, 200);
         System.out.println("Listening for clients on port " + tcpPort);
 
         while (true) {

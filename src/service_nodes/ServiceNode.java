@@ -1,10 +1,13 @@
 package service_nodes;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Base64;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -135,10 +138,24 @@ public class ServiceNode implements Runnable{
     private String handleCompression(String command, String data) throws IOException {
         CompressionService svc = new CompressionService();
         if (command.equals("COMPRESS")) {
-            return "OK|" + svc.compress(data);
+            // Decode Base64 to get original file bytes, then compress those bytes
+            byte[] originalBytes = Base64.getDecoder().decode(data);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (java.util.zip.GZIPOutputStream gzip = new java.util.zip.GZIPOutputStream(out)) {
+                gzip.write(originalBytes);
+            }
+            return "OK|" + Base64.getEncoder().encodeToString(out.toByteArray());
         }
         if (command.equals("DECOMPRESS")) {
-            return "OK|" + svc.decompress(data);
+            // Decode Base64 to get compressed bytes, then decompress
+            byte[] compressedBytes = Base64.getDecoder().decode(data);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try (java.util.zip.GZIPInputStream gis = new java.util.zip.GZIPInputStream(new ByteArrayInputStream(compressedBytes))) {
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = gis.read(buffer)) > 0) out.write(buffer, 0, len);
+            }
+            return "OK|" + Base64.getEncoder().encodeToString(out.toByteArray());
         }
         return "ERROR|Compression commands: COMPRESS|text or DECOMPRESS|base64(gzipBytes)";
     }
@@ -149,7 +166,7 @@ public class ServiceNode implements Runnable{
         }
         CSVStatsService svc = new CSVStatsService();
         String result = svc.processCSV(data);
-        return result.startsWith("Results") ? "OK|" + result : "ERROR|" + result;
+        return result.startsWith("Error") ? "ERROR|" + result : "OK|" + result;
     }
 
     private String handleEntropy(String command, String data) {
