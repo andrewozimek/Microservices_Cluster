@@ -326,7 +326,7 @@ Higher entropy = more complex/random file (plain text ~3–5, images ~7–8).
 
 **ImageTransform**
 ```
-Command: GRAYSCALE | FLIP | ROTATE | RESIZE | THUMBNAIL
+Command: GRAYSCALE | ROTATE | RESIZE | THUMBNAIL
 Enter image file path (Windows): C:\Users\you\testfiles\photo.png
 Enter image file path (Mac):     /Users/you/testfiles/photo.png
 Result saved to: testfiles\output.png

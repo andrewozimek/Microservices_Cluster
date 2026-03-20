@@ -124,14 +124,19 @@ public class ServiceNode implements Runnable{
     }
 
     private String handleBase64(String command, String data) {
-        Base64EncodeDecode svc = new Base64EncodeDecode();
         if (command.equals("ENCODE")) {
-            return "OK|" + svc.encode(data);
+            // Client already Base64-encoded the file bytes for transport — that IS the correct encoding
+            return "OK|" + data;
         }
         if (command.equals("DECODE")) {
-        String result = svc.decode(data);
-        return result.equals("Invalid Base64 input") ? "ERROR|" + result : "OK|" + result;
-}
+            try {
+                // Decode input, return decoded bytes wrapped in Base64 for transport (client unwraps)
+                byte[] decoded = Base64.getDecoder().decode(data);
+                return "OK|" + Base64.getEncoder().encodeToString(decoded);
+            } catch (IllegalArgumentException e) {
+                return "ERROR|Invalid Base64 input";
+            }
+        }
         return "ERROR|Base64 commands: ENCODE|text or DECODE|base64";
     }
 
